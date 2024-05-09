@@ -1,0 +1,39 @@
+version: '3'
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/var/www/html
+    ports:
+      - "8080:80"
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server:/var/www/html
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: challenge_user
+      DB_PASSWORD: challenge_password
+      DB_NAME: challenge_name
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: challenge_name
+      MYSQL_USER: challenge_user
+      MYSQL_PASSWORD: challenge_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
